@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState} from 'react';
 
-const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import AppContainer from "./containers/AppContainer";
+import {IUser, Role} from "./models/user";
+
+export interface IAuthContext {
+  user?: IUser | undefined;
+  role?: Role;
+  login?: () => void;
+  logout?: () => void;
 }
 
-export default App;
+export const AuthContext = React.createContext<IAuthContext>({});
+
+export default function App() {
+
+  const [user, setUser] = useState<IUser>();
+  const [role, setRole] = useState<Role>("GUEST");
+
+  const value: IAuthContext = {
+    user,
+    role,
+    login() {
+      console.log("aqui");
+    },
+    logout: () => {
+      setRole("GUEST");
+      setUser(undefined);
+    },
+  };
+
+
+  return (
+    <AuthContext.Provider value={value}>
+      <AppContainer />
+    </AuthContext.Provider>
+  );
+}
